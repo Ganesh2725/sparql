@@ -3,7 +3,7 @@
 This SPARQL search system allows users to query a semantic dataset using SPARQL and receive results in a user-friendly format on a web page. The system uses Javascript and HTML, with Bootstrap for styling.
 
 <!-- Show UI -->
-![UI]("./ui.png")
+![UI](https://github.com/Ganesh2725/sparql/blob/main/ui.png)
 
 ### sample SPARQL queries 
 
