@@ -5,12 +5,11 @@ This SPARQL search system allows users to query a semantic dataset using SPARQL 
 <!-- Show UI -->
 ![UI](https://github.com/Ganesh2725/sparql/blob/main/ui.png)
 
-### sample SPARQL queries 
-
+## sample SPARQL queries 
 ### Get the names and birth dates of all the Presidents of the United States:
 
-```SELECT ?name ?birthdate
---
+```
+SELECT ?name ?birthdate
 WHERE {
   ?person a <http://dbpedia.org/ontology/President>;
           <http://dbpedia.org/property/name> ?name;
@@ -19,8 +18,11 @@ WHERE {
 ORDER BY ?name
 ```
 
+
 ### Query to retrieve the names of all the countries in the DBpedia ontology:
-``` SELECT DISTINCT ?countryName
+
+``` 
+SELECT DISTINCT ?countryName
 WHERE {
   ?country a <http://dbpedia.org/ontology/Country> .
   ?country <http://www.w3.org/2000/01/rdf-schema#label> ?countryName .
@@ -32,4 +34,5 @@ WHERE {
 
 ## Credits
 -This search system was created by Ganesh Team. It uses Bootstrap for styling, JQuery for AJAX requests, and SPARQL.js for SPARQL parsing. 
+
 -The semantic data used in this search system comes from DBpedia.
