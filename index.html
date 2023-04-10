@@ -3,31 +3,43 @@
   <head>
     <meta charset="utf-8">
     <title>SPARQL Query</title>
+    <!-- Using Bootstrap for styling -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
   </head>
   <body>
     <div class="container">
-      <h1>SPARQL Query</h1>
+      <h3 class="text-primary">SPARQL Search System</h3>
       <div class="mb-3">
         <label for="query" class="form-label">Enter your SPARQL query:</label>
-        <textarea class="form-control" id="query" rows="5"></textarea>
+        <textarea class="form-control" id="query" rows="6" placeholder="SELECT DISTINCT ?language ?creator ?company
+        WHERE {
+          ?language rdf:type dbo:ProgrammingLanguage.
+          ?language dbo:designer ?creator.
+          OPTIONAL {?language dbo:developer ?company.}
+        }
+        "></textarea>
       </div>
       <button class="btn btn-primary" onclick="submitQuery()">Submit</button>
       <div id="results" class="mt-4"></div>
     </div>
+    <!-- JQuerry -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
-    <script>
+    
+
+    <!-- Javascript function to implement Seacr Querry -->
+    <script>   
       function submitQuery() {
         var query = $('#query').val();
-        var endpoint = "https://dbpedia.org/sparql"; // Replace with the URL of your SPARQL endpoint
+        var endpoint = "https://dbpedia.org/sparql"; //  SPARQL endpoint
         var format = "application/sparql-results+json";
         var data = {query: query, format: format};
+        //Get Request to the 
         $.ajax({
           type: "GET",
           url: endpoint,
           data: data,
-          dataType: "json",
+          dataType: "json",//On success. This is the response that will be rendered on the page.
           success: function(response) {
             var html = '<table class="table"><thead><tr>';
             for (var i = 0; i < response.head.vars.length; i++) {
@@ -36,9 +48,11 @@
             html += '</tr></thead><tbody>';
             for (var i = 0; i < response.results.bindings.length; i++) {
               html += '<tr>';
+
               for (var j = 0; j < response.head.vars.length; j++) {
                 var variable = response.head.vars[j];
                 if (response.results.bindings[i].hasOwnProperty(variable)) {
+
                   html += '<td>' + response.results.bindings[i][variable].value + '</td>';
                 } else {
                   html += '<td></td>';
@@ -49,11 +63,14 @@
             html += '</tbody></table>';
             $('#results').html(html);
           },
-          error: function(xhr, status, error) {
+          error: function(xhr, status, error) { 
             $('#results').html('Error: ' + error);
           }
         });
       }
     </script>
+
+
+
   </body>
 </html>
