@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SPARQL Query</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>SPARQL Query</h1>
+      <div class="mb-3">
+        <label for="query" class="form-label">Enter your SPARQL query:</label>
+        <textarea class="form-control" id="query" rows="5"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="submitQuery()">Submit</button>
+      <div id="results" class="mt-4"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+    <script>
+      function submitQuery() {
+        var query = $('#query').val();
+        var endpoint = "https://dbpedia.org/sparql"; // Replace with the URL of your SPARQL endpoint
+        var format = "application/sparql-results+json";
+        var data = {query: query, format: format};
+        $.ajax({
+          type: "GET",
+          url: endpoint,
+          data: data,
+          dataType: "json",
+          success: function(response) {
+            var html = '<table class="table"><thead><tr>';
+            for (var i = 0; i < response.head.vars.length; i++) {
+              html += '<th>' + response.head.vars[i] + '</th>';
+            }
+            html += '</tr></thead><tbody>';
+            for (var i = 0; i < response.results.bindings.length; i++) {
+              html += '<tr>';
+              for (var j = 0; j < response.head.vars.length; j++) {
+                var variable = response.head.vars[j];
+                if (response.results.bindings[i].hasOwnProperty(variable)) {
+                  html += '<td>' + response.results.bindings[i][variable].value + '</td>';
+                } else {
+                  html += '<td></td>';
+                }
+              }
+              html += '</tr>';
+            }
+            html += '</tbody></table>';
+            $('#results').html(html);
+          },
+          error: function(xhr, status, error) {
+            $('#results').html('Error: ' + error);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
