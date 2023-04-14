@@ -33,33 +33,39 @@ WHERE {
 
 Query 7:Cities with more than 5 million or are located in California.
 
-SELECT DISTINCT ?city
+SELECT DISTINCT ?cityLabel
 WHERE {
   {?city rdf:type dbo:City ; dbo:populationTotal ?pop. FILTER(?pop > 5000000)}
   UNION
   {?city rdf:type dbo:City ; dbo:isPartOf <http://dbpedia.org/resource/California> .}
+  ?city rdfs:label ?cityLabel .
+  FILTER (lang(?cityLabel) = 'en')
 }
+
 
 
 
 
 Query 4: 
-
 PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dbp: <http://dbpedia.org/property/>
-SELECT DISTINCT ?person ?birthPlace
+
+SELECT DISTINCT ?name ?birthPlaceLabel
 WHERE {
-    { ?person dbo:birthPlace <http://dbpedia.org/resource/California> . }
-    UNION
-    { ?person dbo:birthPlace <http://dbpedia.org/resource/Texas> . }
-    ?person foaf:name ?name .
-    ?person dbo:birthDate ?birthDate .
-    ?person dbo:occupation ?occupation .
-    ?person dbo:birthPlace ?birthPlace .
-    FILTER regex(str(?occupation), "actor", "i") .
+  { ?person dbo:birthPlace <http://dbpedia.org/resource/California> . }
+  UNION
+  { ?person dbo:birthPlace <http://dbpedia.org/resource/Texas> . }
+  ?person foaf:name ?name .
+  ?person dbo:birthDate ?birthDate .
+  ?person dbo:occupation ?occupation .
+  ?person dbo:birthPlace ?birthPlace .
+  ?birthPlace rdfs:label ?birthPlaceLabel .
+  FILTER (lang(?name) = 'en')
+  FILTER (lang(?birthPlaceLabel) = 'en')
+  FILTER regex(str(?occupation), "actor", "i") .
 }
-ORDER BY ASC(?birthPlace) 
+ORDER BY ASC(?birthPlaceLabel)
 LIMIT 10
 
 
