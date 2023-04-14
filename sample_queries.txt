@@ -1,4 +1,4 @@
--- Querry 1:Get the names and birth dates of all the Presidents of the United States:
+-- Querry --1:Get the names and birth dates of all the Presidents of the United States:
 
 SELECT ?name ?birthdate
 WHERE {
@@ -9,7 +9,7 @@ WHERE {
 ORDER BY ?name
 
 
-Query 2:Query to retrieve the names of all the countries in the DBpedia ontology:
+Query --- 2:Query to retrieve the names of all the countries in the DBpedia ontology:
 
 SELECT DISTINCT ?countryName
 WHERE {
@@ -33,21 +33,6 @@ WHERE {
  OPTIONAL {?company rdfs:label ?companyLabel.}
  FILTER (lang(?creatorLabel) = "en").
 }
-
-
-Query 7:Cities with more than 5 million or are located in California.
-
-SELECT DISTINCT ?cityLabel
-WHERE {
-  {?city rdf:type dbo:City ; dbo:populationTotal ?pop. FILTER(?pop > 5000000)}
-  UNION
-  {?city rdf:type dbo:City ; dbo:isPartOf <http://dbpedia.org/resource/California> .}
-  ?city rdfs:label ?cityLabel .
-  FILTER (lang(?cityLabel) = 'en')
-}
-
-
-
 
 
 Query --4: 
@@ -109,6 +94,40 @@ ORDER BY ASC(?birthDate)
 OFFSET 20
 LIMIT 10
 
+
+
+Query 7--:Cities with more than 5 million or are located in California.
+
+SELECT DISTINCT ?cityLabel
+WHERE {
+  {?city rdf:type dbo:City ; dbo:populationTotal ?pop. FILTER(?pop > 5000000)}
+  UNION
+  {?city rdf:type dbo:City ; dbo:isPartOf <http://dbpedia.org/resource/California> .}
+  ?city rdfs:label ?cityLabel .
+  FILTER (lang(?cityLabel) = 'en')
+}
+
+
+Query --8
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+PREFIX dct: <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?city ?country ?population ?continent
+WHERE {
+    {?city rdf:type dbo:City; dbo:populationTotal ?population.
+    FILTER(?population > 10000000)}
+    UNION
+    {?city rdf:type dbo:City; dbp:populationMetro ?population.
+    FILTER(?population > 10000000)}
+    ?city dct:subject ?subject.
+    ?subject dbo:wikiPageRedirects ?continent.
+    ?continent dbo:wikiPageDisambiguates ?continentDisamb.
+    ?continentDisamb dbo:wikiPageRedirects ?continent.
+    ?city dbo:country ?country.
+}
+ORDER BY DESC(?population)
+LIMIT 5
 
 
 
