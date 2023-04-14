@@ -1,0 +1,105 @@
+-- Querry 1:Get the names and birth dates of all the Presidents of the United States:
+
+SELECT ?name ?birthdate
+WHERE {
+  ?person a <http://dbpedia.org/ontology/President>;
+          <http://dbpedia.org/property/name> ?name;
+          <http://dbpedia.org/ontology/birthDate> ?birthdate.
+}
+ORDER BY ?name
+
+
+Query 2:Query to retrieve the names of all the countries in the DBpedia ontology:
+
+SELECT DISTINCT ?countryName
+WHERE {
+  ?country a <http://dbpedia.org/ontology/Country> .
+  ?country <http://www.w3.org/2000/01/rdf-schema#label> ?countryName .
+  FILTER(LANG(?countryName) = 'en')
+}
+
+--Query 3: 
+
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT DISTINCT ?language ?creator ?company
+WHERE {
+  ?language rdf:type dbo:ProgrammingLanguage.
+  ?language dbo:designer ?creator.
+  OPTIONAL {?language dbo:developer ?company.}
+  FILTER langMatches(lang(?language), "en").
+}
+
+Query 7:Cities with more than 5 million or are located in California.
+
+SELECT DISTINCT ?city
+WHERE {
+  {?city rdf:type dbo:City ; dbo:populationTotal ?pop. FILTER(?pop > 5000000)}
+  UNION
+  {?city rdf:type dbo:City ; dbo:isPartOf <http://dbpedia.org/resource/California> .}
+}
+
+
+
+
+Query 4: 
+
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dbp: <http://dbpedia.org/property/>
+SELECT DISTINCT ?person ?birthPlace
+WHERE {
+    { ?person dbo:birthPlace <http://dbpedia.org/resource/California> . }
+    UNION
+    { ?person dbo:birthPlace <http://dbpedia.org/resource/Texas> . }
+    ?person foaf:name ?name .
+    ?person dbo:birthDate ?birthDate .
+    ?person dbo:occupation ?occupation .
+    ?person dbo:birthPlace ?birthPlace .
+    FILTER regex(str(?occupation), "actor", "i") .
+}
+ORDER BY ASC(?birthPlace) 
+LIMIT 10
+
+
+
+
+Query 5:
+
+
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+SELECT DISTINCT ?language
+WHERE {
+  ?language rdf:type dbo:ProgrammingLanguage.
+  ?language dbo:designer ?designer.
+  OPTIONAL {?language dbo:developer ?developer.}
+  ?language dbp:operatingSystem ?os.
+  FILTER regex(str(?os), "windows", "i") .
+}
+ORDER BY ?language
+LIMIT 10
+
+
+Query 6:
+
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+SELECT ?person ?name ?birthDate
+WHERE {
+  ?person a dbo:Person .
+  ?person foaf:name ?name .
+  ?person dbo:birthDate ?birthDate .
+}
+ORDER BY ASC(?birthDate)
+OFFSET 20
+LIMIT 10
+
+
+
+
+
+
+
+
