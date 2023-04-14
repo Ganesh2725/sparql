@@ -18,18 +18,22 @@ WHERE {
   FILTER(LANG(?countryName) = 'en')
 }
 
---Query 3: 
+--Query --3: 
 
 PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT DISTINCT ?language ?creator ?company
+SELECT DISTINCT ?languageLabel ?creatorLabel ?companyLabel
 WHERE {
-  ?language rdf:type dbo:ProgrammingLanguage.
-  ?language dbo:designer ?creator.
-  OPTIONAL {?language dbo:developer ?company.}
-  FILTER langMatches(lang(?language), "en").
+ ?language rdf:type dbo:ProgrammingLanguage.
+ ?language dbo:designer ?creator.
+ OPTIONAL {?language dbo:developer ?company.}
+ FILTER (lang(?languageLabel) = "en").
+ ?language rdfs:label ?languageLabel.
+ ?creator rdfs:label ?creatorLabel.
+ OPTIONAL {?company rdfs:label ?companyLabel.}
+ FILTER (lang(?creatorLabel) = "en").
 }
+
 
 Query 7:Cities with more than 5 million or are located in California.
 
@@ -46,7 +50,7 @@ WHERE {
 
 
 
-Query 4: 
+Query --4: 
 PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dbp: <http://dbpedia.org/property/>
@@ -71,21 +75,24 @@ LIMIT 10
 
 
 
-Query 5:
+Query --5:
 
 
 PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX dbp: <http://dbpedia.org/property/>
-SELECT DISTINCT ?language
+SELECT DISTINCT ?languageLabel
 WHERE {
-  ?language rdf:type dbo:ProgrammingLanguage.
-  ?language dbo:designer ?designer.
-  OPTIONAL {?language dbo:developer ?developer.}
-  ?language dbp:operatingSystem ?os.
-  FILTER regex(str(?os), "windows", "i") .
+ ?language rdf:type dbo:ProgrammingLanguage.
+ ?language dbo:designer ?designer.
+ OPTIONAL {?language dbo:developer ?developer.}
+ ?language dbp:operatingSystem ?os.
+ FILTER regex(str(?os), "windows", "i") .
+ ?language rdfs:label ?languageLabel.
+ FILTER (lang(?languageLabel) = "en").
 }
-ORDER BY ?language
+ORDER BY ASC(?languageLabel)
 LIMIT 10
+
 
 
 Query 6:
