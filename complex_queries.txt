@@ -1,0 +1,178 @@
+
+-- Querry --10:Get the names and birth dates of all the Presidents of the United States:
+
+SELECT ?name ?birthdate
+WHERE {
+  ?person a <http://dbpedia.org/ontology/President>;
+          <http://dbpedia.org/property/name> ?name;
+          <http://dbpedia.org/ontology/birthDate> ?birthdate.
+}
+
+
+-- Query --11:Query to retrieve the names, birth dates, birth places, and occupations of all actors born in California or Texas:
+
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dbp: <http://dbpedia.org/property/>
+
+SELECT DISTINCT ?name ?birthDate ?birthPlaceLabel ?occupationLabel
+WHERE {
+  { ?person dbo:birthPlace <http://dbpedia.org/resource/California> . }
+  UNION
+  { ?person dbo:birthPlace <http://dbpedia.org/resource/Texas> . }
+  ?person foaf:name ?name .
+  ?person dbo:birthDate ?birthDate .
+  ?person dbo:occupation ?occupation .
+  ?person dbo:birthPlace ?birthPlace .
+  ?birthPlace rdfs:label ?birthPlaceLabel .
+  ?occupation rdfs:label ?occupationLabel .
+  FILTER (lang(?name) = 'en')
+  FILTER (lang(?birthPlaceLabel) = 'en')
+  FILTER (lang(?occupationLabel) = 'en')
+  FILTER regex(str(?occupation), "actor", "i") .
+}
+
+
+-- Query --12:Query to retrieve the movies, genre, release date, and runtime of all movies released after 2000
+
+SELECT DISTINCT ?movie ?genreLabel ?releaseDate ?runtime
+WHERE {
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie <http://dbpedia.org/ontology/genre> ?genre .
+  ?movie <http://dbpedia.org/ontology/releaseDate> ?releaseDate .
+  ?movie <http://dbpedia.org/ontology/runtime> ?runtime .
+  ?genre rdfs:label ?genreLabel .
+  FILTER (lang(?genreLabel) = 'en')
+  FILTER (?releaseDate > '2000-01-01'^^xsd:date)
+}
+
+-- Query to retrieve the movies, release date, and runtime of all movies released after 2000 and of genre comedy
+
+SELECT DISTINCT ?movie ?releaseDate ?runtime
+WHERE {
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie <http://dbpedia.org/ontology/genre> <http://dbpedia.org/resource/Comedy> .
+  ?movie <http://dbpedia.org/ontology/releaseDate> ?releaseDate .
+  ?movie <http://dbpedia.org/ontology/runtime> ?runtime .
+  FILTER (?releaseDate > '2000-01-01'^^xsd:date)
+}
+
+-- Query --14:Query to retrieve the names, birth dates, birth places, and occupations of all actors born in California or Texas and who have a movie in the genre comedy released after 2000
+
+  SELECT DISTINCT ?name ?birthDate ?birthPlaceLabel ?occupationLabel
+  WHERE {
+    { ?person dbo:birthPlace <http://dbpedia.org/resource/California> . }
+    UNION
+    { ?person dbo:birthPlace <http://dbpedia.org/resource/Texas> . }
+    ?person foaf:name ?name .
+    ?person dbo:birthDate ?birthDate .
+    ?person dbo:occupation ?occupation .
+    ?person dbo:birthPlace ?birthPlace .
+    ?birthPlace rdfs:label ?birthPlaceLabel .
+    ?occupation rdfs:label ?occupationLabel .
+    FILTER (lang(?name) = 'en')
+    FILTER (lang(?birthPlaceLabel) = 'en')
+    FILTER (lang(?occupationLabel) = 'en')
+    FILTER regex(str(?occupation), "actor", "i") .
+    ?movie a <http://dbpedia.org/ontology/Film> .
+    ?movie <http://dbpedia.org/ontology/genre> <http://dbpedia.org/resource/Comedy> .
+    ?movie <http://dbpedia.org/ontology/releaseDate> ?releaseDate .
+    ?movie <http://dbpedia.org/ontology/runtime> ?runtime .
+    FILTER (?releaseDate > '2000-01-01'^^xsd:date)
+  }
+
+-- Query --15:Query to retrieve the political party names, the names of the party leaders, and the names of the party members of all political parties in the DBpedia ontology:
+
+SELECT DISTINCT ?partyName ?leaderName ?memberName
+WHERE {
+  ?party a <http://dbpedia.org/ontology/Party> .
+  ?party <http://www.w3.org/2000/01/rdf-schema#label> ?partyName .
+  ?party <http://dbpedia.org/ontology/leader> ?leader .
+  ?leader <http://www.w3.org/2000/01/rdf-schema#label> ?leaderName .
+  ?party <http://dbpedia.org/ontology/member> ?member .
+  ?member <http://www.w3.org/2000/01/rdf-schema#label> ?memberName .
+  FILTER (lang(?partyName) = 'en')
+  FILTER (lang(?leaderName) = 'en')
+  FILTER (lang(?memberName) = 'en')
+}
+
+-- Query --16: Query to retrieve the names, birth dates, birth places, and occupations of all actors who have starred in movies with Tom Cruise
+
+SELECT DISTINCT ?name ?birthDate ?birthPlaceLabel ?occupationLabel
+WHERE {
+  ?person foaf:name ?name .
+  ?person dbo:birthDate ?birthDate .
+  ?person dbo:occupation ?occupation .
+  ?person dbo:birthPlace ?birthPlace .
+  ?birthPlace rdfs:label ?birthPlaceLabel .
+  ?occupation rdfs:label ?occupationLabel .
+  FILTER (lang(?name) = 'en')
+  FILTER (lang(?birthPlaceLabel) = 'en')
+  FILTER (lang(?occupationLabel) = 'en')
+  FILTER regex(str(?occupation), "actor", "i") .
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie <http://dbpedia.org/ontology/starring> ?person .
+  ?movie <http://dbpedia.org/ontology/starring> <http://dbpedia.org/resource/Tom_Cruise> .
+}
+
+
+-- Query --17: Query to retrieve the countries, their capitals, the population of the countries, and the population density 
+
+SELECT DISTINCT ?countryLabel ?capitalLabel ?population ?populationDensity
+WHERE {
+  ?country a <http://dbpedia.org/ontology/Country> .
+  ?country <http://www.w3.org/2000/01/rdf-schema#label> ?countryLabel .
+  ?country <http://dbpedia.org/ontology/capital> ?capital .
+  ?capital <http://www.w3.org/2000/01/rdf-schema#label> ?capitalLabel .
+  ?country <http://dbpedia.org/ontology/populationTotal> ?population .
+  ?country <http://dbpedia.org/ontology/populationDensity> ?populationDensity .
+  FILTER (lang(?countryLabel) = 'en')
+  FILTER (lang(?capitalLabel) = 'en')
+}
+
+-- Query --18: Query to retrieve the names of all countries with a population of over 100 million and the names of their respective capital cities
+
+SELECT DISTINCT ?countryLabel ?capitalLabel
+WHERE {
+  ?country a <http://dbpedia.org/ontology/Country> .
+  ?country <http://www.w3.org/2000/01/rdf-schema#label> ?countryLabel .
+  ?country <http://dbpedia.org/ontology/capital> ?capital .
+  ?capital <http://www.w3.org/2000/01/rdf-schema#label> ?capitalLabel .
+  ?country <http://dbpedia.org/ontology/populationTotal> ?population .
+  FILTER (lang(?countryLabel) = 'en')
+  FILTER (lang(?capitalLabel) = 'en')
+  FILTER (?population > 100000000)
+}
+
+
+-- Query --19: Query to retrieve the names and birth dates of all authors who have written books in both English and French
+
+SELECT DISTINCT ?name ?birthDate
+WHERE {
+  ?person foaf:name ?name .
+  ?person dbo:birthDate ?birthDate .
+  FILTER (lang(?name) = 'en')
+  FILTER regex(str(?person), "author", "i") .
+  ?book a <http://dbpedia.org/ontology/Book> .
+  ?book <http://dbpedia.org/ontology/author> ?person .
+  ?book <http://dbpedia.org/ontology/language> ?language .
+  FILTER (lang(?language) = 'en')
+  FILTER (lang(?language) = 'fr')
+}
+
+-- Query --20: Query to retrieve the names and release dates of all movies that have won an Academy Award for Best Picture, along with the names of the production companies that made them.
+
+SELECT DISTINCT ?name ?releaseDate ?productionCompanyLabel
+WHERE {
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  ?movie <http://dbpedia.org/ontology/releaseDate> ?releaseDate .
+  ?movie <http://dbpedia.org/ontology/award> ?award .
+  ?award <http://www.w3.org/2000/01/rdf-schema#label> ?awardLabel .
+  FILTER (lang(?name) = 'en')
+  FILTER (lang(?awardLabel) = 'en')
+  FILTER regex(str(?awardLabel), "Academy Award for Best Picture", "i") .
+  ?movie <http://dbpedia.org/ontology/productionCompany> ?productionCompany .
+  ?productionCompany <http://www.w3.org/2000/01/rdf-schema#label> ?productionCompanyLabel .
+  FILTER (lang(?productionCompanyLabel) = 'en')
+}
