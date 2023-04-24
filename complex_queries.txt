@@ -16,6 +16,25 @@ WHERE {
 }
 
 
+
+SELECT DISTINCT ?name ?birthDate ?birthPlaceLabel ?occupationLabel
+WHERE {
+  ?person foaf:name ?name .
+  ?person dbo:birthDate ?birthDate .
+  ?person dbo:occupation ?occupation .
+  ?person dbo:birthPlace ?birthPlace .
+  ?birthPlace rdfs:label ?birthPlaceLabel .
+  ?occupation rdfs:label ?occupationLabel .
+  FILTER (lang(?name) = 'en')
+  FILTER (lang(?birthPlaceLabel) = 'en')
+  FILTER (lang(?occupationLabel) = 'en')
+  FILTER regex(str(?occupation), "actor", "i") .
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie <http://dbpedia.org/ontology/starring> ?person .
+  ?movie <http://dbpedia.org/ontology/starring> <http://dbpedia.org/resource/Tom_Cruise> .
+}
+
+
 -- Query --11:Query to retrieve the names, birth dates, birth places, and occupations of all actors born in California or Texas:
 
 PREFIX dbo: <http://dbpedia.org/ontology/>
