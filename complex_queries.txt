@@ -1,11 +1,18 @@
-
--- Querry --10:Get the names and birth dates of all the Presidents of the United States:
-
-SELECT ?name ?birthdate
+SELECT DISTINCT ?name ?birthDate ?birthPlaceLabel ?occupationLabel
 WHERE {
-  ?person a <http://dbpedia.org/ontology/President>;
-          <http://dbpedia.org/property/name> ?name;
-          <http://dbpedia.org/ontology/birthDate> ?birthdate.
+  ?person foaf:name ?name .
+  ?person dbo:birthDate ?birthDate .
+  ?person dbo:occupation ?occupation .
+  ?person dbo:birthPlace ?birthPlace .
+  ?birthPlace rdfs:label ?birthPlaceLabel .
+  ?occupation rdfs:label ?occupationLabel .
+  FILTER (lang(?name) = 'en')
+  FILTER (lang(?birthPlaceLabel) = 'en')
+  FILTER (lang(?occupationLabel) = 'en')
+  FILTER regex(str(?occupation), "actor", "i") .
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie <http://dbpedia.org/ontology/starring> ?person .
+  ?movie <http://dbpedia.org/ontology/starring> <http://dbpedia.org/resource/Tom_Cruise> .
 }
 
 
